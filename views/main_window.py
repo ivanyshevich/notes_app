@@ -23,7 +23,6 @@ from PyQt6.QtCore import Qt, QSize
 from models import Note
 from repository import NoteRepository
 
-
 # Resolve icons folder (one level up)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ICON_DIR = os.path.join(BASE_DIR, "icons")
@@ -54,18 +53,15 @@ class MainWindow(QMainWindow):
         nav_lyt = QVBoxLayout(nav)
         nav_lyt.setContentsMargins(8, 8, 8, 8)
 
-        # Sidebar title
         lbl_title = QLabel("Нотатки")
         lbl_title.setStyleSheet("font-size:18px; font-weight:bold; color:#E0E0E0;")
         nav_lyt.addWidget(lbl_title)
 
-        # Search box
         self.search = QLineEdit()
         self.search.setPlaceholderText("Пошук…")
         self.search.textChanged.connect(self._filter_center)
         nav_lyt.addWidget(self.search)
 
-        # New note button
         btn_new = QPushButton("+ Новий запис")
         btn_new.setObjectName("newNoteButton")
         btn_new.setFixedHeight(28)
@@ -78,7 +74,6 @@ class MainWindow(QMainWindow):
         btn_new.clicked.connect(self._create_note)
         nav_lyt.addWidget(btn_new)
 
-        # Recent notes list
         nav_lyt.addSpacing(12)
         nav_lyt.addWidget(QLabel("Нещодавні"))
         self.recent_list = QListWidget()
@@ -87,7 +82,6 @@ class MainWindow(QMainWindow):
         self.recent_list.setStyleSheet("font-size:14px;")
         nav_lyt.addWidget(self.recent_list, stretch=1)
 
-        # Folders header + add-folder icon
         nav_lyt.addSpacing(12)
         hdr = QHBoxLayout()
         hdr.addWidget(QLabel("Папки"))
@@ -98,7 +92,6 @@ class MainWindow(QMainWindow):
         hdr.addStretch()
         nav_lyt.addLayout(hdr)
 
-        # Folder list
         self.folder_list = QListWidget()
         for name in ["Усі", "Особисті", "Робота", "Подорожі", "Фінанси"]:
             item = QListWidgetItem(self._icon("folder"), name)
@@ -108,11 +101,12 @@ class MainWindow(QMainWindow):
         self.folder_list.setStyleSheet("font-size:14px;")
         nav_lyt.addWidget(self.folder_list, stretch=1)
 
-        # More list
         nav_lyt.addSpacing(12)
         nav_lyt.addWidget(QLabel("More"))
         more_list = QListWidget()
-        for name, key in [("Збережене", "bookmark"), ("Корзина", "delete"), ("Архів", "archive")]:
+        for name, key in [("Збережене", "bookmark"),
+                          ("Корзина", "delete"),
+                          ("Архів", "archive")]:
             itm = QListWidgetItem(self._icon(key), name)
             more_list.addItem(itm)
         more_list.setIconSize(QSize(24, 24))
@@ -161,7 +155,6 @@ class MainWindow(QMainWindow):
 
         title_delete = QToolButton()
         title_delete.setIcon(self._icon("delete"))
-        # make icon and button larger
         title_delete.setIconSize(QSize(24, 24))
         title_delete.setFixedSize(32, 32)
         title_delete.setToolTip("Видалити запис")
@@ -171,21 +164,39 @@ class MainWindow(QMainWindow):
 
         dlyt.addLayout(title_row)
 
-        # ─── Metadata row ───
-        meta = QHBoxLayout()
+        # ─── Date Row ───
+        date_row = QHBoxLayout()
         date_icon = QLabel()
         date_icon.setPixmap(self._icon("calendar_today").pixmap(16, 16))
-        meta.addWidget(date_icon)
+        date_row.addWidget(date_icon)
+
+        lbl_date_static = QLabel("Дата")
+        lbl_date_static.setStyleSheet("color: #AAAAAA;")
+        date_row.addWidget(lbl_date_static)
+
         self.lbl_date = QLabel()
-        meta.addWidget(self.lbl_date)
+        self.lbl_date.setStyleSheet("text-decoration: underline; color:#E0E0E0;")
+        date_row.addWidget(self.lbl_date)
+
+        date_row.addStretch()
+        dlyt.addLayout(date_row)
+
+        # ─── Folder Row ───
+        folder_row = QHBoxLayout()
         folder_icon = QLabel()
         folder_icon.setPixmap(self._icon("folder").pixmap(16, 16))
-        meta.addSpacing(12)
-        meta.addWidget(folder_icon)
+        folder_row.addWidget(folder_icon)
+
+        lbl_folder_static = QLabel("Папка")
+        lbl_folder_static.setStyleSheet("color: #AAAAAA;")
+        folder_row.addWidget(lbl_folder_static)
+
         self.lbl_folder = QLabel()
-        meta.addWidget(self.lbl_folder)
-        meta.addStretch()
-        dlyt.addLayout(meta)
+        self.lbl_folder.setStyleSheet("text-decoration: underline; color:#E0E0E0;")
+        folder_row.addWidget(self.lbl_folder)
+
+        folder_row.addStretch()
+        dlyt.addLayout(folder_row)
 
         # ── Scrollable formatting bar ──
         scroll = QScrollArea()
@@ -216,14 +227,14 @@ class MainWindow(QMainWindow):
             return btn
 
         add_btn(icon_key="format_paragraph", text="Paragraph", tip="Стиль абзацу", slot=self._change_paragraph_style)
-        add_btn(icon_key="arrow_drop_down", text="16", tip="Розмір шрифту", slot=self._change_font_size)
-        add_btn(icon_key="format_bold", tip="Жирний", slot=self._toggle_bold)
-        add_btn(icon_key="format_italic", tip="Курсив", slot=self._toggle_italic)
+        add_btn(icon_key="arrow_drop_down",   text="16", tip="Розмір шрифту", slot=self._change_font_size)
+        add_btn(icon_key="format_bold",       tip="Жирний", slot=self._toggle_bold)
+        add_btn(icon_key="format_italic",     tip="Курсив", slot=self._toggle_italic)
         add_btn(icon_key="format_underlined", tip="Підкресл.", slot=self._toggle_underline)
         add_btn(icon_key="format_list_bulleted", tip="Список", slot=self._insert_list)
-        add_btn(icon_key="imagesmode", tip="Зображення", slot=self._insert_image)
-        add_btn(icon_key="link", tip="Посилання", slot=self._insert_link)
-        add_btn(icon_key="table_chart", tip="Таблиця", slot=self._insert_table)
+        add_btn(icon_key="imagesmode",        tip="Зображення", slot=self._insert_image)
+        add_btn(icon_key="link",              tip="Посилання", slot=self._insert_link)
+        add_btn(icon_key="table_chart",       tip="Таблиця", slot=self._insert_table)
 
         scroll.setWidget(bar)
         dlyt.addWidget(scroll)
@@ -237,18 +248,15 @@ class MainWindow(QMainWindow):
         outer.setSizes([180, 300, 600])
         self.setCentralWidget(outer)
 
-
     # ─── Helpers ───
 
     def _save_current(self):
-        """Save the current note’s content before switching away."""
         if self.current_note:
             self.current_note.content = self.editor.toHtml()
             try:
                 self.repo.update(self.current_note)
             except AttributeError:
                 self.repo.add(self.current_note)
-
 
     # ─── Data Loading & Selection ───
 
@@ -284,7 +292,6 @@ class MainWindow(QMainWindow):
             itm.setHidden(t not in note.title.lower())
 
     def _on_select(self, current, previous):
-        """Save previous, then load the newly selected note."""
         if previous:
             self._save_current()
         if current:
@@ -297,13 +304,10 @@ class MainWindow(QMainWindow):
             self.editor.setHtml(note.content)
             self.editor.blockSignals(False)
 
-
     # ─── Actions ───
 
     def _create_note(self):
-        """Save any edits, then always create a brand-new blank note."""
         self._save_current()
-
         note = Note(
             id=str(uuid.uuid4()),
             title="Новий запис",
@@ -312,14 +316,10 @@ class MainWindow(QMainWindow):
             folder="Особисті"
         )
         self.repo.add(note)
-
-        # reload and select the new one
         self._load_all()
         self.recent_list.setCurrentRow(0)
 
-
     def _update_title(self, new_title: str):
-        """Save edits to the note’s title back to the repository."""
         if self.current_note:
             self.current_note.title = new_title
             try:
@@ -333,9 +333,7 @@ class MainWindow(QMainWindow):
                     self.recent_list.setCurrentItem(itm)
                     break
 
-
     def _delete_note(self):
-        """Delete the current note."""
         if not self.current_note:
             return
         try:
@@ -347,8 +345,7 @@ class MainWindow(QMainWindow):
         self.editor.clear()
         self._load_all()
 
-
-    # ─── Formatting methods (unchanged) ───
+    # ─── Formatting methods ───
 
     def _toggle_bold(self):
         fmt = QTextCharFormat()
