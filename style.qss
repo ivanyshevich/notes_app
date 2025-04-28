@@ -1,0 +1,92 @@
+/* style.qss */
+* {
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Main window background */
+QMainWindow {
+    background-color: #121212;
+}
+
+/* --- Sidebar lists --- */
+QListWidget {
+    background-color: #181818;
+    color: #E0E0E0;
+    border: none;
+}
+QListWidget::item {
+    padding: 8px 12px;
+}
+QListWidget::item:selected {
+    background-color: #6200EA;      /* deep purple accent */
+    color: #FFFFFF;
+}
+
+/* Divider handle */
+QSplitter::handle {
+    background-color: #2E2E2E;
+}
+
+/* --- Search box --- */
+QLineEdit {
+    background-color: #1E1E1E;
+    color: #FFFFFF;
+    border: 1px solid #333333;
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+QLineEdit:focus {
+    border: 1px solid #6200EA;
+}
+
+/* --- Editor --- */
+QTextEdit {
+    background-color: #181818;
+    color: #E0E0E0;
+    border: none;
+    padding: 8px;
+}
+
+/* --- Toolbar --- */
+QToolBar {
+    background: #121212;
+    spacing: 6px;
+    border: none;
+}
+
+/* --- Buttons --- */
+/* Floating New‐Note button style */
+QPushButton {
+    background-color: #6200EA;
+    color: #FFFFFF;
+    border-radius: 24px;
+    min-width: 48px;
+    min-height: 48px;
+}
+QPushButton:hover {
+    background-color: #7C4DFF;
+}
+
+/* Scrollbars */
+QScrollBar:vertical {
+    width: 8px;
+    background: #2E2E2E;
+    margin: 0px;
+}
+QScrollBar::handle:vertical {
+    background: #6200EA;
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+#newNoteButton {
+    background-color: #2a2a2a;
+    border: none;
+    border-radius: 4px;
+    color: #E0E0E0;
+    font-size: 14px;
+    padding: 2px 6px;
+}
+#newNoteButton:hover {
+    background-color: #3a3a3a;
+}
